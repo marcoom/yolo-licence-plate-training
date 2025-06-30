@@ -48,27 +48,21 @@ The images were annotated using [LabelImg](https://github.com/HumanSignal/labelI
 1. **Clone the Repository**
 
      ```bash
-   git clone https://github.com/your_username/your_repository.git
-   cd your_repository
+   git clone https://github.com/marcoom/yolo-licence-plate-training.git
+   cd yolo-licence-plate-training
    ```
 
 2. **Create a Virtual Environment**
 
      ```bash
-   conda create -n car-plate python=3.8
-   conda activate car-plate
+   conda create -n yolo_license_plate_training python=3.8
+   conda activate yolo_license_plate_training
    ```
 
 3. **Install Dependencies**
 
      ```bash
    pip install -r requirements.txt
-   ```
-
-   *Note*: The `requirements.txt` contains:
-
-    ```bash
-   ultralytics==8.2.64
    ```
 
 ## Training
@@ -78,24 +72,42 @@ The images were annotated using [LabelImg](https://github.com/HumanSignal/labelI
 Ensure the `data.yaml` file is correctly set up. It should contain:
 
 ```yaml
+path: <path_to_yolo-licence-plate-training>
 train: ./train/images
 val: ./valid/images
 test: ./test/images
 
 nc: 1
 names: ['car_plate']
+augmentation:
+  hsv_h: 0.015
+  hsv_s: 0.7
+  hsv_v: 0.4
+  degrees: 30.0
+  translate: 0.1
+  scale: 0.5
+  shear: 0.0
+  perspective: 0.0
+  flipud: 0.0
+  fliplr: 0.0
+  mosaic: 1.0
+  mixup: 0.0
+  erasing: 0.4
+  crop_fraction: 1.0
 ```
 
+- **path**: Path to the root directory of the dataset.
 - **train**, **val**, **test**: Paths to the respective image directories.
 - **nc**: Number of classes (in this case, 1 for car plates).
 - **names**: List of class names.
+- **augmentation**: Augmentation parameters for data augmentation. For an in-depth explanation of each parameter, check https://docs.ultralytics.com/guides/yolo-data-augmentation/
 
 ### Training Command
 
 Train the model using the following command:
 
 ```bash
-yolo task=detect mode=train model=yolov8n.pt data=./data.yaml epochs=50 imgsz=640 augment=True
+yolo task=detect mode=train model=yolov8n.pt data=data.yaml epochs=300 imgsz=640 pretrained=True augment=True
 ```
 
 - **Parameters**:
@@ -103,13 +115,23 @@ yolo task=detect mode=train model=yolov8n.pt data=./data.yaml epochs=50 imgsz=64
   - `mode=train`: Sets the mode to training.
   - `model=yolov8n.pt`: Starts from the pre-trained YOLOv8 nano model.
   - `data=./data.yaml`: Uses the specified data configuration file.
-  - `epochs=50`: Number of training epochs.
+  - `epochs=300`: Number of training epochs.
   - `imgsz=640`: Image size for training.
   - `augment=True`: Enables data augmentation.
 
+  For more information about the training parameters, check https://docs.ultralytics.com/usage/cfg/#train-settings
+
+To generate a .ncnn model after training is done, use the following command:
+
+```bash
+yolo export model=./runs/detect/train/weights/best.pt format=ncnn
+```
+
+The .ncnn model will be saved in the `runs/detect/train/weights/best_ncnn_model` directory.
+
 ### Training with Google Colab
 
-You can also train the model using the `YOLOv8_train.ipynb` notebook in Google Colab:
+You can also train the model using the `train_yolov8_jupyter.ipynb` notebook in Google Colab:
 
 1. Upload the dataset and notebook to your Google Drive.
 2. Open the notebook in Google Colab.
@@ -125,6 +147,7 @@ Training artifacts and results are saved in the `runs/detect/train` directory.
 - **Model Weights**:
   - `best.pt`: Best model based on validation metrics.
   - `last.pt`: Model from the final training epoch.
+  - `best_ncnn_model`: Folder containing multiple files for the NCNN model.
 
 - **Training Metrics**:
   - `results.png`: Overview of training metrics over epochs.
@@ -136,15 +159,6 @@ Training artifacts and results are saved in the `runs/detect/train` directory.
   - `train_batch0.jpg`, `train_batch1.jpg`, `train_batch2.jpg`: Sample training images with annotations.
   - `val_batch0_pred.jpg`, `val_batch1_pred.jpg`: Validation images with model predictions.
 
-### Visualizations
-
-- **Precision-Recall Curve**
-
-  ![PR Curve](runs/detect/train/PR_curve.png)
-
-- **Confusion Matrix**
-
-  ![Confusion Matrix](runs/detect/train/confusion_matrix.png)
 
 ## Usage
 
@@ -171,18 +185,8 @@ yolo task=detect mode=predict model=./runs/detect/train/weights/best.pt source=.
 ├── data.yaml
 ├── README.md
 ├── requirements.txt
-├── YOLOv8_train.ipynb
-├── train/
-│   ├── images/
-│   └── labels/
-├── valid/
-│   ├── images/
-│   └── labels/
-├── test/
-│   ├── images/
-│   └── labels/
-├── runs/
-│   └── detect/
+├── runs
+│   └── detect
 │       └── train/
 │           ├── weights/
 │           │   ├── best.pt
@@ -191,6 +195,21 @@ yolo task=detect mode=predict model=./runs/detect/train/weights/best.pt source=.
 │           ├── PR_curve.png
 │           ├── confusion_matrix.png
 │           └── ... (other artifacts)
+├── test
+│   ├── classes.txt
+│   ├── images
+│   └── labels
+├── train
+│   ├── classes.txt
+│   ├── images
+│   └── labels
+├── train_yolov8_jupyter.ipynb
+├── valid
+│   ├── classes.txt
+│   ├── images
+│   └── labels
+├── yolo11n.pt
+└── yolov8n.pt
 ```
 
 ## Acknowledgments
