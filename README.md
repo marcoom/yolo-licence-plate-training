@@ -31,6 +31,8 @@ Each subset contains:
 - **Images**: Located in the `images` folder, in `.png` format.
 - **Labels**: Corresponding annotations in YOLO format, located in the `labels` folder.
 
+The dataset used to train the model is based on the [Large License Plate Detection Dataset](https://www.kaggle.com/datasets/fareselmenshawii/large-license-plate-dataset)
+
 ### Data Annotation
 
 The images were annotated using [LabelImg](https://github.com/HumanSignal/labelImg), an open-source graphical image annotation tool. For installation instructions, please refer to the [LabelImg website](https://github.com/HumanSignal/labelImg).
