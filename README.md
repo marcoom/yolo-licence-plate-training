@@ -218,3 +218,14 @@ yolo task=detect mode=predict model=./runs/detect/train/weights/best.pt source=.
 
 - **Ultralytics YOLOv8**: [GitHub Repository](https://github.com/ultralytics/ultralytics)
 - **LabelImg**: [GitHub Repository](https://github.com/HumanSignal/labelImg)
+
+## License
+
+This project is licensed under the **GNU Affero General Public License v3.0 (AGPL-3.0)**.
+
+By using or redistributing this code or any derived models, you agree to the terms of the AGPL-3.0 license.  
+This means that if you modify or use this project to provide a public service (e.g., an API or web app), you must also make your modified source code publicly available under the same license.
+
+This project uses [Ultralytics YOLOv8](https://github.com/ultralytics/ultralytics), which is also licensed under AGPL-3.0.  
+For commercial use of YOLOv8 or derivatives, please refer to [Ultralytics Licensing](https://ultralytics.com/license).
+
